@@ -1,4 +1,5 @@
 <template>
+  <!-- 자식을 원하는 위치에 넣으려면 slot이라는 기능을 사용한다. -->
   <div class="content-box-container"><slot></slot></div>
 </template>
 
