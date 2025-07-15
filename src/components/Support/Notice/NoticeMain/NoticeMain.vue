@@ -10,6 +10,7 @@ const route = useRoute();
 const noticeList = ref([]);
 const noticeCount = ref(0);
 const modalState = useModalState();
+const detailId = ref(0);
 
 //초기값 지정 파라미터. 페이지를 1로 설정.
 const noticeSearch = (cPage = 1) => {
@@ -24,8 +25,9 @@ const noticeSearch = (cPage = 1) => {
   });
 };
 
-const noticeDetail = () => {
+const noticeDetail = (id) => {
   modalState.$patch({ isOpen: true });
+  detailId.value = id;
 };
 
 watch(
@@ -55,7 +57,10 @@ onMounted(() => {
         <template v-if="noticeCount !== 0">
           <tr v-for="notice in noticeList" :key="notice.noticeId" class="notice-table-row">
             <td class="notice-cell">{{ notice.noticeId }}</td>
-            <td class="notice-cell cursor-pointer hover:underline" @click="noticeDetail">
+            <td
+              class="notice-cell cursor-pointer hover:underline"
+              @click="noticeDetail(notice.noticeId)"
+            >
               {{ notice.noticeTitle }}
             </td>
             <!-- 뒤에 초를 없애고 싶어서 substr 사용 -->
@@ -72,7 +77,12 @@ onMounted(() => {
     </table>
     <PageNavigation :total-items="noticeCount" :items-per-page="5" :on-page-change="noticeSearch" />
   </div>
-  <NoticeModal v-if="modalState.isOpen" />
+  <NoticeModal
+    v-if="modalState.isOpen"
+    :detail-id
+    @post-success="noticeSearch()"
+    @un-mounted-modal="detailId = $event"
+  />
 </template>
 
 <style>
